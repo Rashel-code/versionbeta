@@ -1,0 +1,41 @@
+import numpy as np
+import pandas as pd
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+# Datos simulados basados en el ejemplo de las variables del caso turístico
+data = {'Entorno': [3, 4, 3, 2, 4, 5, 2, 3, 4, 3],
+        'Gastronomía': [5, 3, 4, 3, 4, 2, 4, 3, 4, 5],
+        'Costo de Viaje': [2, 4, 3, 5, 3, 4, 2, 3, 5, 3],
+        'Vida Nocturna': [4, 2, 3, 5, 3, 4, 5, 2, 3, 4],
+        'Alojamiento': [3, 5, 4, 3, 2, 5, 3, 4, 5, 2],
+        'Arte y Cultura': [4, 3, 5, 4, 2, 3, 4, 5, 2, 3]}
+
+df = pd.DataFrame(data)
+
+# Estandarizar los datos
+scaler = StandardScaler()
+df_scaled = scaler.fit_transform(df)
+
+# Definir el modelo de K-medias
+kmeans = KMeans(n_clusters=3, random_state=42)
+
+# Ajustar el modelo a los datos
+kmeans.fit(df_scaled)
+
+# Obtener los clusters y agregar al DataFrame original
+df['Cluster'] = kmeans.labels_
+
+# Ver los resultados
+print(df)
+
+# Visualizar los clusters
+plt.scatter(df['Entorno'], df['Gastronomía'], c=df['Cluster'], cmap='viridis')
+plt.title('Clusters de Turistas basados en Paquetes Turísticos')
+plt.xlabel('Entorno')
+plt.ylabel('Gastronomía')
+plt.show()
+
+# Información sobre los centroides
+print("Centroides:", kmeans.cluster_centers_)
